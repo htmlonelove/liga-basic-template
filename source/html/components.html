@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+
+  @@include("source/html/base/head.html")
+  <title>Компоненты</title>
+
+  <style>
+    .container {
+      padding-top: 30px;
+      padding-bottom: 30px;
+    }
+
+    .container > a {
+      display: inline-block;
+      margin-bottom: 10px;
+      margin-left: 7px;
+    }
+
+    .container > a span:first-child {
+      position: relative;
+      top: -3px;
+
+      display: inline-block;
+      margin-right: 15px;
+
+      font-size: 16px;
+      line-height: 24px;
+      vertical-align: top;
+
+      transform: scale(2);
+    }
+
+    .container > a span:last-child {
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    .container > a + h1 {
+      margin-bottom: 0;
+    }
+
+    .container > section {
+      padding: 20px 0;
+    }
+  </style>
+
+</head>
+<body>
+
+  <div style="display: none;">
+    @@include("build/img/sprite_auto.svg")
+  </div>
+
+  <div class="wrapper">
+    @@include("source/html/base/header.html")
+
+    <main>
+      <div class="container">
+        <a href="index.html">
+          <span>&larr;</span>
+          <span>вернуться на разводящую</span>
+        </a>
+        <h1>Компоненты, используемые в вёрстке</h1>
+
+        <section>
+          <h2>Название компонента или группы компонентов</h2>
+
+          <p>Класс компонента \ модификаторы</p>
+          <p style="color: red;">При необходимости, подсказки \ предупреждение \ важная информация</p>
+          <div>Компонент</div>
+        </section>
+
+        <!-- Всегда оставляйте коммент ниже, чтобы удобно было копипастить -->
+        <!-- <section>
+          <h2></h2>
+
+          <p></p>
+        </section> -->
+      </div>
+    </main>
+
+    @@include("source/html/base/footer.html")
+  </div>
+
+  <script src="js/vendor.min.js"></script>
+  <script src="js/main.min.js"></script>
+</body>
+</html>

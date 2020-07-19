@@ -1,0 +1,28 @@
+<header class="header @@if (context.mod) { header--@@mod }">
+  <div class="header__wrapper">
+    <a class="header__logo" @@if (!context.main) { href="main.html"} aria-label="Переход на главную">
+      Логотип
+    </a>
+
+    <nav class="main-nav">
+      <button class="main-nav__toggle btn-reset" type="button" aria-label="Переключатель отображения меню" aria-pressed="false">
+        <svg width="20" height="20">
+          <use xlink:href="#icon-burger"></use>
+        </svg>
+      </button>
+      <div class="main-nav__wrapper">
+        <ul class="main-nav__list">
+          <li class="main-nav__item">
+            <a class="main-nav__link @@if (context.headerActiveLinkIndex === 0) { main-nav__link--active }" @@if (context.headerActiveLinkIndex !== 0) { href="#" }>Пункт 1</a>
+          </li>
+          <li class="main-nav__item">
+            <a class="main-nav__link @@if (context.headerActiveLinkIndex === 1) { main-nav__link--active }" @@if (context.headerActiveLinkIndex !== 1) { href="#" }>Пункт 2</a>
+          </li>
+          <li class="main-nav__item">
+            <a class="main-nav__link @@if (context.headerActiveLinkIndex === 2) { main-nav__link--active }" @@if (context.headerActiveLinkIndex !== 2) { href="#" }>Пункт 3</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
