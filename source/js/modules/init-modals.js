@@ -11,7 +11,7 @@ const modalSuccessBtns = document.querySelectorAll('[data-modal="success"]');
 // если вам нужно открывать модалку в другом месте под какими-нибудь условиями
 const initModals = () => {
   // фикс для редких случаев, когда модалка появляется при загрузке страницы
-  window.onload = () => {
+  window.addEventListener('load', () => {
     if (modals.length) {
       modals.forEach((el) => {
         setTimeout(() => {
@@ -19,7 +19,7 @@ const initModals = () => {
         }, 100);
       });
     }
-  };
+  });
 
   if (modalFeedback && modalFeedbackBtn.length) {
     setupModal(modalFeedback, false, modalFeedbackBtn, false, false);
