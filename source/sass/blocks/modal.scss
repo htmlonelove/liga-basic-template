@@ -80,6 +80,16 @@
     }
   }
 
+  &--fit-content {
+    .modal__content {
+      width: auto;
+
+      @include viewport--sm {
+        width: 100%;
+      }
+    }
+  }
+
   &--no-scale {
     transform: none;
   }

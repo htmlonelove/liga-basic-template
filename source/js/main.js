@@ -1,13 +1,11 @@
-import {polyfills} from './utils/polyfills';
-import {ieFooterNailing} from './utils/ie-footer-nailing';
+import {ieFix} from './utils/ie-fix';
 
 import {initModals} from './modules/init-modals';
 
 // Utils
 // ---------------------------------
 
-polyfills();
-ieFooterNailing();
+ieFix();
 
 // Modules
 // ---------------------------------
