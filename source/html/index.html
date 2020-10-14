@@ -3,7 +3,7 @@
 <head>
 
   @@include("source/html/base/head.html")
-  <title>Оглавление</title>
+  <title>Список страниц</title>
 
   <style>
     .container {
@@ -11,8 +11,42 @@
       padding-bottom: 50px;
     }
 
+    h1 {
+      font-size: 24px;
+      line-height: 28px;
+    }
+
     a {
-      color: blue;
+      color: rgb(10, 10, 175);
+    }
+
+    li {
+      font-size: 18px;
+      line-height: 22px;
+      margin-bottom: 7px;
+    }
+
+    img {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      display: block;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: 768px) {
+      ol {
+        padding-left: 20px;
+      }
+
+      ol li {
+        margin-bottom: 15px;
+      }
+
+      .container {
+        padding-top: 20px;
+        padding-bottom: 20px;
+      }
     }
   </style>
 
@@ -21,13 +55,17 @@
 
   <main>
     <div class="container">
-      <h1>Список страниц</h1>
+      <img src="https://via.placeholder.com/300x150" width="300" alt="Логотип проекта">
+      <h1>Список страниц и компонентов</h1>
       <ol>
         <li>
-          <a href="components.html">Компоненты</a>
+          <a href="components.html">UI Kit — components.html</a>
         </li>
         <li>
-          <a href="main.html">Главная --- main.html</a>
+          <a href="main.html">Главная — main.html</a>
+        </li>
+        <li>
+          <a href="#">Название страницы (состояние страницы, если отдельное) — ссылка на страницу</a>
         </li>
       </ol>
     </div>
