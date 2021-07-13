@@ -1,8 +1,6 @@
 // v 0.0.1
 
 const testInstruments = () => {
-  console.log(1);
-
   // создание панели
   const panel = document.createElement('div');
   panel.classList = 'ts-panel';
