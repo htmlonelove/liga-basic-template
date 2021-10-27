@@ -79,7 +79,7 @@ const sprite = () => {
       .pipe(gulp.dest('build/img'));
 };
 
-const syncserver = () => {
+const syncServer = () => {
   server.init({
     server: 'build/',
     notify: false,
@@ -92,8 +92,8 @@ const syncserver = () => {
   gulp.watch('source/sass/**/*.{scss,sass}', gulp.series(css));
   gulp.watch('source/js/**/*.{js,json}', gulp.series(js, refresh));
   gulp.watch('source/data/**/*.{js,json}', gulp.series(copy, refresh));
-  gulp.watch('source/img/**/*.svg', gulp.series(copysvg, sprite, html, refresh));
-  gulp.watch('source/img/**/*.{png,jpg}', gulp.series(copypngjpg, html, refresh));
+  gulp.watch('source/img/**/*.svg', gulp.series(copySvg, sprite, html, refresh));
+  gulp.watch('source/img/**/*.{png,jpg}', gulp.series(copyImages, html, refresh));
 
   gulp.watch('source/favicon/**', gulp.series(copy, refresh));
   gulp.watch('source/video/**', gulp.series(copy, refresh));
@@ -106,12 +106,12 @@ const refresh = (done) => {
   done();
 };
 
-const copysvg = () => {
+const copySvg = () => {
   return gulp.src('source/img/**/*.svg', {base: 'source'})
       .pipe(gulp.dest('build'));
 };
 
-const copypngjpg = () => {
+const copyImages = () => {
   return gulp.src('source/img/**/*.{png,jpg}', {base: 'source'})
       .pipe(gulp.dest('build'));
 };
@@ -137,7 +137,7 @@ const clean = () => {
 
 const build = gulp.series(clean, svgo, copy, css, sprite, js, html);
 
-const start = gulp.series(build, syncserver);
+const start = gulp.series(build, syncServer);
 
 // Optional tasks
 //---------------------------------
