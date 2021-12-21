@@ -135,9 +135,9 @@ const clean = () => {
   return del('build');
 };
 
-const build = gulp.series(clean, svgo, copy, css, sprite, js, html);
+const start = gulp.series(clean, svgo, copy, css, sprite, js, html, syncServer);
 
-const start = gulp.series(build, syncServer);
+const build = gulp.series(clean, svgo, copy, css, sprite, js, html, optimizeImages);
 
 // Optional tasks
 //---------------------------------
