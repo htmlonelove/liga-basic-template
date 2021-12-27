@@ -135,10 +135,6 @@ const clean = () => {
   return del('build');
 };
 
-const start = gulp.series(clean, svgo, copy, css, sprite, js, html, syncServer);
-
-const build = gulp.series(clean, svgo, copy, css, sprite, js, html, optimizeImages);
-
 // Optional tasks
 //---------------------------------
 
@@ -163,6 +159,10 @@ const optimizeImages = () => {
       ]))
       .pipe(gulp.dest('build/img'));
 };
+
+const start = gulp.series(clean, svgo, copy, css, sprite, js, html, syncServer);
+
+const build = gulp.series(clean, svgo, copy, css, sprite, js, html, optimizeImages);
 
 exports.build = build;
 exports.start = start;
