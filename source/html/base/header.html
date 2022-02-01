@@ -1,12 +1,19 @@
 <header class="header @@if (context.mod) { header--@@mod }">
-  <div class="header__wrapper">
-    <a class="header__logo" @@if (!context.main) { href="main.html"} aria-label="Переход на главную">
-      Логотип
-    </a>
+  <div class="container">
+    @@if (!context.index) {
+      <a class="header__logo" href="index.html" aria-label="Переход на главную">
+        Логотип
+      </a>
+    }
+    @@if (context.index) {
+      <span class="header__logo">
+        Логотип
+      </span>
+    }
 
     <nav class="main-nav">
       <button class="main-nav__toggle btn-reset" type="button" aria-label="Переключатель отображения меню" aria-pressed="false">
-        <svg width="20" height="20">
+        <svg width="20" height="20" aria-hidden="true">
           <use xlink:href="#icon-burger"></use>
         </svg>
       </button>

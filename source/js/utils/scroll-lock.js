@@ -1,43 +1,48 @@
-const body = document.querySelector('body');
+import {iosChecker} from './ios-checker';
 
-// eslint-disable-next-line consistent-return
-const getScrollbarWidth = () => {
-  const outer = document.createElement('div');
-  outer.style.visibility = 'hidden';
-  outer.style.overflow = 'scroll';
-  outer.style.msOverflowStyle = 'scrollbar';
-  body.appendChild(outer);
-  const inner = document.createElement('div');
-  outer.appendChild(inner);
-  const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
-  outer.parentNode.removeChild(outer);
-  if (body.offsetHeight > window.innerHeight) {
-    return scrollbarWidth;
+export class ScrollLock {
+  constructor() {
+    this._iosChecker = iosChecker;
+    this._lockClass = this._iosChecker() ? 'scroll-lock-ios' : 'scroll-lock';
+    this._scrollTop = null;
+    this._fixedBlockElements = document.querySelectorAll('[data-fix-block]');
   }
-};
 
-const getBodyScrollTop = () => {
-  return (
-    self.pageYOffset ||
-    (document.documentElement && document.documentElement.ScrollTop) ||
-    (body && body.scrollTop)
-  );
-};
-
-const disableScrolling = (noScrollbar) => {
-  if (!noScrollbar) {
-    const scrollWidth = getScrollbarWidth();
-    body.setAttribute('style', `padding-right: ${scrollWidth}px;`);
+  _getScrollbarWidth() {
+    return window.innerWidth - document.documentElement.clientWidth;
   }
-  body.dataset.scrollY = `${getBodyScrollTop()}`;
-  body.style.top = `-${body.dataset.scrollY}px`;
-  body.classList.add('scroll-lock');
-};
 
-const enableScrolling = () => {
-  body.removeAttribute('style');
-  body.classList.remove('scroll-lock');
-  window.scrollTo(0, +body.dataset.scrollY);
-};
+  _getBodyScrollTop() {
+    return (
+      self.pageYOffset ||
+      (document.documentElement && document.documentElement.ScrollTop) ||
+      (document.body && document.body.scrollTop)
+    );
+  }
 
-export {disableScrolling, enableScrolling};
+  disableScrolling() {
+    this._scrollTop = document.body.dataset.scroll = document.body.dataset.scroll ? document.body.dataset.scroll : this._getBodyScrollTop();
+    if (this._getScrollbarWidth()) {
+      document.body.style.paddingRight = `${this._getScrollbarWidth()}px`;
+      this._fixedBlockElements.forEach((block) => {
+        block.style.paddingRight = `${this._getScrollbarWidth()}px`;
+      });
+    }
+    document.body.style.top = `-${this._scrollTop}px`;
+    document.body.classList.add(this._lockClass);
+  }
+
+  enableScrolling() {
+    document.body.classList.remove(this._lockClass);
+    window.scrollTo(0, +document.body.dataset.scroll);
+    document.body.style.paddingRight = null;
+    document.body.style.top = null;
+    this._fixedBlockElements.forEach((block) => {
+      block.style.paddingRight = null;
+    });
+    document.body.removeAttribute('data-scroll');
+    this._scrollTop = null;
+  }
+}
+
+window.scrollLock = new ScrollLock();

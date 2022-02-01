@@ -1,11 +1,11 @@
-<div class="modal modal--preload modal--@@name @@if (context.responsive) { modal--responsive } @@if (context.fitContent) { modal--fit-content } @@if (context.noScale) { modal--no-scale } @@if (context.mod) { modal--@@mod }">
+<div class="modal modal--preload @@if (context.responsive) { modal--responsive } @@if (context.fitContent) { modal--fit-content } @@if (context.noScale) { modal--no-scale } @@if (context.mod) { modal--@@mod }" data-modal="@@name">
   <div class="modal__wrapper">
-    <div class="modal__overlay"></div>
+    <div class="modal__overlay" data-close-modal></div>
     <div class="modal__content">
 
       @@include("source/html/components/modal-@@name.html")
 
-      <button class="modal__close-btn btn-reset" type="button" aria-label="Закрыть попап">
+      <button class="modal__close-btn btn-reset" type="button" aria-label="Закрыть попап" data-close-modal>
         <svg width="15" height="15">
           <use xlink:href="#icon-close"></use>
         </svg>
