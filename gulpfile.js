@@ -1,7 +1,7 @@
 const gulp = require('gulp');
 const plumber = require('gulp-plumber');
 const sourcemap = require('gulp-sourcemaps');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
 const server = require('browser-sync').create();
@@ -142,7 +142,7 @@ const clean = () => {
 // Используйте отличное от дефолтного значение root, если нужно обработать отдельную папку в img,
 // а не все изображения в img во всех папках.
 
-// root = `` - по дефолту webp добавляются и обналяются во всех папках в source/img/
+// root = `` - по дефолту webp добавляются и обновляются во всех папках в source/img/
 // root = `content/` - webp добавляются и обновляются только в source/img/content/
 
 const createWebp = () => {
