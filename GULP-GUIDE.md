@@ -2,66 +2,50 @@
 
 Запустив команду `npm i` на проект установятся все зависимости, необходимые для работы.
 
-Превым делом, в gulp мы находим эти зависимости и присваиваем их переменным.
+Основные таски сборки представлены в виде модулей и сложены в папку gulp находящуюся в корне проекта
+
+В gulpfile.js мы импортируем зависимости.
 
 ```js
-  const gulp = require(`gulp`); // основа gulp
-  const sass = require(`gulp-sass`); // дополнительный плагин
+  import gulp from 'gulp'; // основа gulp
+  import browserSync from 'browser-sync'; // дополнительный плагин
+  import del from 'del'; // дополнительный плагин
 ```
 
-Далее мы описываем задачи gulp - `const html = () => {};`
+Далее мы импортируем таски из модулей.
 
 ```js
-  const html = () => {
-  return gulp.src(['source/html/*.html'])
-    .pipe(fileinclude({
-      prefix: '@@',
-      basepath: '@root',
-      context: { // глобальные переменные для include
-        test: 'text'
-      }
-    }))
-    .pipe(htmlbeautify({
-      'indent_size': 2,
-      'preserve_newlines': true,
-      'max_preserve_newlines': 0,
-      'wrap_attributes': 'auto',
-    }))
-    .pipe(gulp.dest('build'));
-};
+  import styles from './gulp/compileStyles.mjs'; // стили
+  import { copy, copyImages, copySvg } from './gulp/copyAssets.mjs'; // копирование
+  import js from './gulp/compileScripts.mjs'; // js
+  import { svgo, sprite, createWebp, optimizeImages } from './gulp/optimizeImages.mjs'; // работа с графикой
+  import html from './gulp/compileHtml.mjs'; // html
 ```
 
-## Краткое описание каждой таски.
+Пример модуля с таской
 
-1. Преобразовает компоненты `@@include("source/html/base/head.html")` в готовый html.
+Сначала мы импортируем все необходимые зависимости.
 
 ```js
- const html = () => {
-  return gulp.src(['source/html/*.html'])
-    .pipe(fileinclude({
-      prefix: '@@',
-      basepath: '@root',
-      context: { // глобальные переменные для include
-        test: 'text'
-      }
-    }))
-    .pipe(htmlbeautify({
-      'indent_size': 2,
-      'preserve_newlines': true,
-      'max_preserve_newlines': 0,
-      'wrap_attributes': 'auto',
-    }))
-    .pipe(gulp.dest('build'));
-  };
+  import gulp from 'gulp';
+  import plumber from 'gulp-plumber';
+  import dartSass from 'sass';
+  import gulpSass from 'gulp-sass';
+  import postcss from 'gulp-postcss';
+  import autoprefixer from 'autoprefixer';
+  import csso from 'gulp-csso';
+  import gcmq from 'gulp-group-css-media-queries';
+  import rename from 'gulp-rename';
 ```
 
-2. Преобразовает sass в css. В build кладется как стандартная версия, так и минифицированная.
+Далее создаём функцию.
 
 ```js
-  const css = () => {
-    return gulp.src('source/sass/style.scss')
+  const sass = gulpSass(dartSass);
+
+  const compileStyles = () =>
+    gulp.src('source/sass/style.scss', {sourcemaps: true})
         .pipe(plumber())
-        .pipe(sourcemap.init())
         .pipe(sass())
         .pipe(postcss([autoprefixer({
           grid: true,
@@ -70,154 +54,55 @@
         .pipe(gulp.dest('build/css'))
         .pipe(csso())
         .pipe(rename('style.min.css'))
-        .pipe(sourcemap.write('.'))
-        .pipe(gulp.dest('build/css'))
-        .pipe(server.stream());
+        .pipe(gulp.dest('build/css', {sourcemaps: '.'}));
+```
+Далее экспортим функцию.
+
+```js
+  export default compileStyles;
+```
+
+В gulpfile.js оставдены только базовые таски.
+
+```js
+  const server = browserSync.create();
+  const streamStyles = () => styles().pipe(server.stream());
+  const clean = () => del('build');
+  const refresh = (done) => {
+    server.reload();
+    done();
   };
-```
 
-3. Преобразовает js ES6 в ES5 и минифицирует его. 
 
-```js
-  const js = () => {
-    return gulp.src(['source/js/main.js'])
-        .pipe(webpackStream(webpackConfig))
-        .pipe(gulp.dest('build/js'))
-  };
-```
-
-4. Оптимизирует svg.
-
-```js
-  const svgo = () => {
-    return gulp.src('source/img/**/*.{svg}')
-        .pipe(imagemin([
-          imagemin.svgo({
-              plugins: [
-                {removeViewBox: false},
-                {removeRasterImages: true},
-                {removeUselessStrokeAndFill: false},
-              ]
-            }),
-        ]))
-        .pipe(gulp.dest('source/img'));
-  };
-```
-
-5. Создает спрайт.
-
-```js
-  gulp.task(`sprite`, function () {
-    return gulp.src(`source/img/sprite/*.svg`)
-        .pipe(svgstore({inlineSvg: true}))
-        .pipe(rename(`sprite_auto.svg`))
-        .pipe(gulp.dest(`build/img`));
-  });
-```
-
-6. Запускает локальный сервер, который отслеживает изменения в html, css, js, изображениях и автоматически обновляет себя при изменениях в этих файлах.
-
-```js
   const syncServer = () => {
     server.init({
       server: 'build/',
+      index: 'sitemap.html',
       notify: false,
       open: true,
       cors: true,
       ui: false,
     });
 
-    gulp.watch('source/html/**/*.html', gulp.series(html, refresh));
-    gulp.watch('source/sass/**/*.{scss,sass}', gulp.series(css));
+    gulp.watch('source/pug/**/*.pug', gulp.series(html, refresh));
+    gulp.watch('source/sass/**/*.{scss,sass}', streamStyles);
     gulp.watch('source/js/**/*.{js,json}', gulp.series(js, refresh));
     gulp.watch('source/data/**/*.{js,json}', gulp.series(copy, refresh));
     gulp.watch('source/img/**/*.svg', gulp.series(copySvg, sprite, html, refresh));
-    gulp.watch('source/img/**/*.{png,jpg}', gulp.series(copyImages, html, refresh));
+    gulp.watch('source/img/**/*.{png,jpg,webp}', gulp.series(copyImages, html, refresh));
 
     gulp.watch('source/favicon/**', gulp.series(copy, refresh));
     gulp.watch('source/video/**', gulp.series(copy, refresh));
     gulp.watch('source/downloads/**', gulp.series(copy, refresh));
     gulp.watch('source/*.php', gulp.series(copy, refresh));
   };
-
-  const refresh = (done) => {
-    server.reload();
-    done();
-  };
-
-  const copySvg = () => {
-    return gulp.src('source/img/**/*.svg', {base: 'source'})
-        .pipe(gulp.dest('build'));
-  };
-
-  const copyImages = () => {
-    return gulp.src('source/img/**/*.{png,jpg}', {base: 'source'})
-        .pipe(gulp.dest('build'));
-  };
 ```
 
-7. Копирует файлы из source в build.
+Создание и экспорт комманд.
 
 ```js
-  const copy = () => {
-    return gulp.src([
-      'source/fonts/**',
-      'source/img/**',
-      'source/data/**',
-      'source/favicon/**',
-      'source/video/**',
-      'source/downloads/**',
-      'source/*.php',
-    ], {
-      base: 'source',
-    })
-        .pipe(gulp.dest('build'));
-  };
-```
-
-8. Очищает build.
-
-```js
-  const clean = () => {
-    return del('build');
-  };
-```
-
-9. Запускает сборку и локальный сервер. При необходимости цепочку вызовов можно дополнить. 
-
-❗ Порядок важен.
-
-```js
-  const build = gulp.series(clean, svgo, copy, css, sprite, js, html);
-
+  const build = gulp.series(clean, svgo, copy, styles, sprite, js, html);
   const start = gulp.series(build, syncServer);
-```
 
----
-
-### Опциональные таски. 
-Запуск через `npm run taskName`.
-
-10. Создает webp изображения в source.
-
-```js
-  const createWebp = () => {
-    const root = ``;
-    return gulp.src(`source/img/${root}**/*.{png,jpg}`)
-      .pipe(webp({quality: 90}))
-      .pipe(gulp.dest(`source/img/${root}`));
-  };
-```
-
-11. Оптимизирует изображения в build.
-
-```js
-  const optimizeImages = () => {
-    return gulp.src('build/img/**/*.{png,jpg}')
-        .pipe(imagemin([
-          imagemin.optipng({optimizationLevel: 3}),
-          imagemin.mozjpeg({quality: 75, progressive: true}),
-        ]))
-        .pipe(gulp.dest('build/img'));
-  };
+  export { optimizeImages as imagemin, createWebp as webp, build, start };
 ```

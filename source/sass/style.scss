@@ -32,10 +32,13 @@
 // ❗ обязательно используйте mixin hover-focus для отключения ховеров на тач устройствах
 /* @mixin hover-focus {
     @media (hover: hover) {
-      &:hover:not(.focus-visible),
-      &.focus-visible:focus {
+      &:hover:not(.focus-visible) {
         @content;
       }
+    }
+
+    &.focus-visible:focus {
+      @content;
     }
   }
 */
@@ -53,12 +56,17 @@
     }
   }
 */
-// и для focus
+// для focus
 /*@mixin focus {
-    @media (hover: hover) {
-      &.focus-visible:focus {
-        @content;
-      }
+    &.focus-visible:focus {
+      @content;
+    }
+  }
+*/
+// и для active
+/*@mixin active {
+    &.focus-visible:active {
+      @content;
     }
   }
 */
@@ -68,4 +76,4 @@
 // используя vh на проекте задавайте их также как в примере в utils.scss
 
 // для любых transition обязательно указывайте transition-property
-// transition: $trans-default ❌ ---> transition: color $trans-default ✅ ✅
+// transition: $trans-default ❌ ---> transition: color $trans-default ✅
